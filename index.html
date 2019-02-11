@@ -1,85 +1,293 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Tech Talk - Colour Images</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+	<title>Tech Talk - Colour Images</title>
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<style type="text/css">
-			p { text-align: left; }
-		</style>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
+	<link rel="stylesheet" href="index.css">
 
-				<section>
-					<h3>Tech Talk</h3>
-					<h1>Colour Images</h1>
-					<h4><small>Presented by Ryan Wicks</small></h4>
-				</section>
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
 
-				<section>
-					<h2>Overview</h2>
-					<p>This talk will cover the basics of how digital images are represented and stored.</p>
-					<p>Topics will include:</p>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+
+			<section>
+				<h3>Tech Talk</h3>
+				<h1>Colour Images</h1>
+				<h4><small>Presented by Ryan Wicks</small></h4>
+			</section>
+
+			<section>
+				<h2>Overview</h2>
+				<p>This talk will cover the basics of how digital images are represented and stored.</p>
+				<p>Topics will include:</p>
+				<ul>
+					<li>Image Formation</li>
+					<li>Colour Images - Bayer Filters</li>
+					<li>Colour Models</li>
 					<ul>
-						<li>Grayscale Images</li>
-						<li>Colour Images - Bayer Filters</li>
-						<li>Colour Representation</li>
-							<ul>
-								<li>RGB</li>
-								<li>HSV</li>
-								<li>YUV</li>
+						<li>
+							<font color="red">R</font>
+							<font color="green">G</font>
+							<font color="blue">B</font> Model
+						</li>
+						<li>HSV/HSL Models</li>
+						<li>YUV Models</li>
+					</ul>
+					</li>
+					<li>Image Formats</li>
+					<ul>
+						<li>Uncompressed (bmp)</li>
+						<li>Compressed (jpg, png)</li>
+						<li>Tagged (tif, geotiff)</li>
+					</ul>
+				</ul>
+			</section>
+			<section>
+				<section>
+					<h2>Image Formation</h2>
+
+					<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Pinhole-camera.svg"></img>
+
+					<p>Light is passed through pinhole/lens and focused onto a imaging surface.</p>
+				</section>
+				<section>
+					<h2>Digital Imaging Sensors</h2>
+
+					<div class="image-2-col-container">
+						<div class="left-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/CCD_SONY_ICX493AQA_sensor_side.jpg/312px-CCD_SONY_ICX493AQA_sensor_side.jpg"><br>
+							<p>CCD Sensor</p>
+						</div>
+						<div class="right-column"><img
+								src="https://landingfield.files.wordpress.com/2013/02/lbcast11.png?w=645&h=485"><br>
+							<p>Zoom in Sensor</p>
+						</div>
+					</div>
+
+					<p> This is an array sensor like a CCD or CMOS sensor - a set of millions of tiny light level metres
+						in a grid.</p>
+
+				</section>
+				<section>
+					<h2>Storage in Memory</h2>
+
+					<ul>
+						<li>Every pixel is stored as a single location in memory. Colour images use 3 memory locations
+							per pixel.</li>
+						<li>Image size must also be stored somewhere (for instance, in the header)</li>
+						<li>Uncompressed image are large large. <ul>
+								<li>Colour image, 2048x2048 pixels at 16 bit bit depth = 2048x2048x2x3 bytes = 24 MB /
+									image</li>
 							</ul>
 						</li>
-						<li>Image Formats</li>
-						<ul>
-							<li>Uncompressed (raw, bmp)</li>
-							<li>Compressed (jpg, png)</li>
-							<li>Tagged (tif, geotiff)</li>
-						</ul>
+						<li>Images stored like this are called "raster" images (as opposed to vector images).</li>
+					</ul>
+
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<h4><em>All</em> image sensors are grayscale.<sup>*</sup></h4>
+					<div class="image-2-col-container">
+						<div class="left-column"><img src="./Images/Bayer-Colour.PNG"><br>
+							<p>Colour Image</p>
+						</div>
+						<div class="right-column"><img src="./Images/Bayer-NoColour.PNG">
+							<p>Same Image, no Bayer Processing (Bayer Pattern Image)</p>
+						</div>
+					</div>
+					<ul>
+						<li>The right image is what the camera actually sees.</li>
+					</ul>
+					<p><small><sup>*</sup>Except Forevon X3 sensors.</small>
+				</section>
+				<section>
+					<h2>Bayer Filter</h2>
+					<div class="image-2-col-container">
+						<div class="left-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Bayer_pattern_on_sensor.svg/640px-Bayer_pattern_on_sensor.svg.png"><br>
+							<p>Bayer Filter Structure</p>
+						</div>
+						<div class="right-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Bayer_pattern_on_sensor_profile.svg/640px-Bayer_pattern_on_sensor_profile.svg.png">
+							<p>Bayer Light Transmission</p>
+						</div>
+					</div>
+				</section>
+				<section>
+					<h2>Bayer Filters - Demosaicing/Debayering</h2>
+					<div class="image-2-col-container">
+						<div class="left-column">
+							<ul>
+								<li>Each pixel is only one colour, so we have to interpolate nearest neighbours to get
+									colour.</li>
+								<li>There are multiple Bayer filter patterns.</li>
+
+							</ul>
+						</div>
+						<div class="right-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Colorful_spring_garden_Bayer_%2B_RGB.png/144px-Colorful_spring_garden_Bayer_%2B_RGB.png">
+						</div>
+					</div>
+				</section>
+				<section>
+					<h2>Bayer Artifacts</h2>
+					<ul>
+						<li>False Colour Artifacts: incorrect colours, especially at sharp edges in the image.</li>
+						<li>Zippering : also primarily at edges, causes blurring of sharp edges. </li>
+					</ul>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>Colour Models</h2>
+
+					<p>There are several ways to represent colour, each with advantages or areas of application.</p>
+					<ul>
+						<li>Red, Green, Blue Model</li>
+						<li>Hue, Saturation, Lightness/Value Models (HSV)</li>
+						<li>Luminance, Chrominance Models (YUV)</li>
 					</ul>
 				</section>
 				<section>
-					<h2>Grayscale Images</h2>
-					<p></p>
+					<h2>
+						<font color="red">R</font><font color="green">G</font><font color="blue">B</font> Mode
+					</h2>
+
+					<p>Additive colour model, where red, green and blue channels are added together to output a final
+						colour. This method of colour generation is used in most modern output devices, like CRT's,
+						LED and OLED panels and projectors. </p>
+
+					<ul>
+						<li><em>Pro's</em>: Easy to understand. Closest representation to most input and output devices
+							(except printers - CMYK)</li>
+						<li><em>Con's</em>: Not suitable an ideal representation for compression and certain types of
+							analysis.</li>
+					</ul>
 				</section>
 
-			</div>
+				<section>
+					<h3>HSL/HSV Models</h3>
+					<p>Describe a colour image in a way that is similar to how humans perceive colour.</p>
+					<div class="image-2-col-container">
+						<div class="left-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/HSV_color_solid_cylinder_saturation_gray.png/640px-HSV_color_solid_cylinder_saturation_gray.png">
+						</div>
+						<div class="right-column"><img
+								src="http://learn.leighcotnoir.com/wp-content/uploads/2011/07/hsv8.jpg"></div>
+					</div>
+
+					<p>Hue is the colour, value is the brightness of the object and saturation/chroma is the tone of
+						the colour (how saturated the colour is).</p>
+				</section>
+
+				<section>
+					<h2>YUV Models</h2>
+
+
+					<div class="image-2-col-container">
+						<div class="left-column">
+							<p style="text-align:left">Similar to HSV in that it models how humans perceive colour. The signal is converted into luminance/grayscale (Y) and chrominance (UV) components. The human eye has low sensitivity to spatial variations in colour, so this representation is used very heavily for image
+								compression.</p>
+						</div>
+						<div class="right-column"><img
+								src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Barn-yuv.png/200px-Barn-yuv.png">
+						</div>
+					</div>
+				</section>
+
+			</section>
+			</section>
+
+			<section>
+				<section>
+					<h2>Image Formats</h2>
+					<ul>
+						<li>Images can contain a lot of redundant information, and so can usually be compressed.</li>
+						<li>With the exception of raw images from cameras, almost all images are stored in compressed
+							form.</li>
+						<li>There are three ways to store images: Uncompressed, with lossless compression and with lossy
+							compression.</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Uncompressed Image Formats</h2>
+					<p>Uncompressed image formats are not often used because of their large size, but they are very
+						simple to decode and understand. When processing speed is an issue, they can also be useful
+						(compression requires CPU).</p>
+					<ul>
+						<li>BMP - Bitmap - Developed for Windows, extremely simple structure</li>
+						<li>PPM, PGM, PBM, PNM - Portable Pixmap/Graymap/Bitmap/aNymap - either pure ASCII or raw binary
+							with ASCII header.</li>
+						<li>XLS - <a href="https://www.think-maths.co.uk/spreadsheet" rel="noopener noreferrer"
+								target="_blank">Excel Spreadsheets</a></li>
+					</ul>
+				</section>
+				<section>
+					<h2>Lossless Image Formats</h2>
+					<p>The original raw data can be recreated from the compressed image.</p>
+					<ul>
+						<li>GIF - Graphics Interchange Format - limited to 8 bit/256 colours, uses lzw compression.</li>
+						<li>PNG - Portable Network Graphics - open source alternative to gif, support for 8-bit
+							grayscale, 24-bit colour and 16-bit grayscale, 48-bit colour and alpha/transparency
+							channels. Works well with large uniformly coloured areas. </li>
+						<li>TIF - Tagged Image File Format - very flexible format. Can be extended with new tags
+							(GeoTiff). Both lossy and lossless compression available. Not well supported on the web.
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Lossy Image Formats</h2>
+					<p style="text-align: left">The original raw data cannot be created from the original, but the files are small and the images
+						look pretty good.</p>
+					<ul>
+						<li>JPEG - Joint Photographic Experts Group - High compression, almost universal support.
+							Supports 8 bit grayscale and 24 bit colour. Variable degrees of compression (high
+							compression, degraded quality, small file size).</li>
+					</ul>
+				</section>
+			</section>
+
 		</div>
+	</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
 </html>
